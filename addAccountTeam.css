@@ -1,0 +1,27 @@
+.new-member-container:hover{
+    background-color: rgba(211, 211, 211, 0.438);
+    z-index: 0;
+}
+.regional-territories-hidden{
+    color: white;
+}
+.regional-territories{
+    color: rgb(161, 167, 164);
+    transition: color .5s ease-in;
+}
+.overflow-item{
+    overflow-x: visible;
+    white-space: nowrap;
+}
+.red-border{
+    border: 1px solid red;
+}
+.slds-icon-action-approval, .slds-icon-action-close, .slds-button_icon-border{
+    background-color:rgb(4, 132, 75);
+}
+lightning-icon.row-icon:hover{
+    cursor: pointer;
+}
+lightning-icon.row-icon.slds-icon-action-close{
+    background-color: red;
+}

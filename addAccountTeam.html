@@ -1,0 +1,96 @@
+<template>
+    <c-usage-data component-id={trackingComponentId} error={error}></c-usage-data>
+    <div class="slds-modal slds-fade-in-open slds-modal_large slds-backdrop slds-backdrop-open" style="position: fixed; top: 0; right: 0; left: 0; bottom: 0;">
+        <div class="slds-modal__container">
+        <header class="slds-modal__header">
+            <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" onclick={navToAccount} title="Close">
+            <lightning-icon icon-name="utility:close" size="small"></lightning-icon>
+            <span class="slds-assistive-text">Close</span>
+            </button>
+            <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">Add Account Team Members</h2>
+        </header>
+        <div class="slds-modal__content slds-p-around_large" id="modal-content-id-1" style="overflow: scroll;">
+            <lightning-layout class="slds-m-bottom_small slds-p-left_small" pull-to-boundary="medium">
+                <lightning-layout-item size="2" class="slds-text-align_center slds-text-title_caps">User</lightning-layout-item>
+                <lightning-layout-item size="2" class="slds-text-align_center slds-text-title_caps">Role</lightning-layout-item>
+                <lightning-layout-item size="2" class="slds-text-align_center slds-text-title_caps">Region</lightning-layout-item>
+                <lightning-layout-item size="2" class="slds-text-align_center slds-text-title_caps">Territory</lightning-layout-item>
+                <lightning-layout-item size="2" class="slds-text-align_center slds-text-title_caps">Account Access</lightning-layout-item>
+                <lightning-layout-item size="2" class="slds-text-align_center slds-text-title_caps">Case Access</lightning-layout-item>
+                <lightning-layout-item size="2" class="slds-text-align_center slds-text-title_caps">Contact Access</lightning-layout-item>
+                <lightning-layout-item size="2" class="slds-text-align_center slds-text-title_caps">Opportunity Access</lightning-layout-item>
+            </lightning-layout>
+            <template for:each={rows} for:item="newMember">
+                <lightning-record-edit-form key={newMember} data-id={newMember.OrderNumber} density="compact" object-api-name="AccountTeamMember">
+                    <lightning-icon data-id={newMember.OrderNumber} size="xx-small" onclick={removeRow} icon-name="utility:delete" style="float:left;" alternative-text="Delete" class="slds-p-top_x-small slds-m-horizontal_x-small row-icon"></lightning-icon>
+                    <lightning-layout class="slds-m-bottom_small slds-border_bottom new-member-container">
+                        <lightning-layout-item size="2" class="slds-m-right_xx-small user-layout-item">
+                            <lightning-input-field data-id={newMember.OrderNumber} variant="label-hidden" onchange={removeRedBorder} field-name="UserId"></lightning-input-field>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="2" class="slds-m-right_xx-small">
+                            <div class="slds-form-element">
+                                <div class="slds-form-element__control">
+                                    <div class="slds-select_container">
+                                        <select data-id={newMember.OrderNumber} class="slds-select" onchange={conditionalFieldDisable}>
+                                            <template for:each={roleOptions} for:item="option">
+                                                <option key={option} value={option}>{option}</option>
+                                            </template>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="2" class="slds-m-right_xx-small overflow-item">
+                            <lightning-input-field data-id={newMember.OrderNumber} disabled field-name="Region__c" onchange={showAssistiveText} variant="label-hidden"></lightning-input-field>
+                            <p class="regional-territories-hidden slds-p-left_large" data-id={newMember.OrderNumber}></p>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="2" class="slds-m-right_xx-small">
+                            <lightning-input-field data-id={newMember.OrderNumber} disabled field-name="Territory__c" onchange={clearTerritoryNames} variant="label-hidden"></lightning-input-field>
+                        </lightning-layout-item> 
+                        <lightning-layout-item size="2" class="slds-m-right_xx-small">
+                            <lightning-input-field data-id={newMember.OrderNumber} field-name="AccountAccessLevel" variant="label-hidden"></lightning-input-field>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="2" class="slds-m-right_xx-small">
+                            <lightning-input-field data-id={newMember.OrderNumber} field-name="CaseAccessLevel" variant="label-hidden"></lightning-input-field>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="2" class="slds-m-right_xx-small">
+                            <lightning-input-field data-id={newMember.OrderNumber} field-name="ContactAccessLevel" variant="label-hidden"></lightning-input-field>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="2" class="slds-m-right_xx-small">
+                            <lightning-input-field data-id={newMember.OrderNumber} field-name="OpportunityAccessLevel" variant="label-hidden"></lightning-input-field>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                    <p data-id={newMember.OrderNumber}>{newMember.SaveResult}</p>
+                </lightning-record-edit-form>
+            </template>
+        </div>
+        <footer class="slds-modal__footer">
+            <button class="slds-text-align_left slds-button slds-button_neutral" onclick={addRow}>Add Row</button>
+            <button class="slds-button slds-button_neutral" onclick={navToAccount}>Back</button>
+            <button class="slds-button slds-button_brand" onclick={insertNewMembers}>Save</button>
+        </footer>
+    </div>
+    </div>
+        <div if:true={successfulSave} class="slds-notify_container slds-is-relative">
+            <div class="slds-notify slds-notify_toast slds-theme_success" role="status">
+              <span class="slds-assistive-text">success</span>
+              <span class="slds-icon_container slds-icon-utility-success slds-m-right_small slds-no-flex slds-align-top" title="Description of icon when needed">
+                    <lightning-icon icon-name="action:approval" size="small" class="success-check"></lightning-icon>
+              </span>
+              <div class="slds-notify__content">
+                <h2 class="slds-text-heading_small ">{rows.length} Account Team Member(s) successfully created</h2>
+                  <a onclick={navToAccount}>Click here to return to Account record page</a>
+              </div>
+              <div class="slds-notify__close">
+                <button class="slds-button slds-button_icon slds-button_icon-inverse" title="Close">
+                        <lightning-icon icon-name="action:close" size="small"></lightning-icon>
+                  <span class="slds-assistive-text">Close</span>
+                </button>
+              </div>
+            </div>
+        </div>
+        <lightning-spinner if:true={processing}
+            variant="brand"
+            size="large">
+        </lightning-spinner>
+</template>
