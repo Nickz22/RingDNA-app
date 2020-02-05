@@ -4,7 +4,7 @@ addAccountTeam - a custom front end Lightning Web Component used to override the
 
  
 
-Technical Specification - Specified technical details of an Account Governance project. 
+Account 360_ Salesforce Development (v1) - Specified technical details of an Account Governance project. 
 
  
 
